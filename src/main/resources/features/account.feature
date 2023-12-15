@@ -14,7 +14,7 @@ Feature: Create User Account
     And I have checked the checkbox for Age over eighteen
     And I have checked the checkbox for Ethics and Conduct
     When I click Submit
-    Then I create an account and get "THANK YOU FOR CREATING AN ACCOUNT WITH BASKETBALL ENGLAND"
+    Then I create an account successfully and get message "THANK YOU FOR CREATING AN ACCOUNT WITH BASKETBALL ENGLAND"
 
   Scenario: Missing surname
   --Given I am using browser "Edge"
