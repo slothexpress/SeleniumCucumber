@@ -1,5 +1,8 @@
 package stepDefinitions;
 
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,7 +15,6 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Random;
 
-import org.junit.After;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -28,6 +30,7 @@ public class CreateAccountHappyPath {
     private Map<String, Object> vars;
     JavascriptExecutor js;
 
+    @Before
     public void setUp() {
         random = new Random();
         randomNumber = random.nextInt(9000);
@@ -35,13 +38,12 @@ public class CreateAccountHappyPath {
 
     @After
     public void tearDown() {
+        driver.close();
         driver.quit();
     }
 
     @Given("I am using browser {string}")
     public void iAmUsingBrowser(String browser) {
-        setUp();
-
         if(browser.toUpperCase().equals("CHROME")) {
             driver = new ChromeDriver();
 
@@ -133,6 +135,7 @@ public class CreateAccountHappyPath {
         String expected = message;
 
         Assert.assertEquals(expected, actual);
+
     }
 
     @Then("I should see an error message {string}")
