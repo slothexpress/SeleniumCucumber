@@ -24,5 +24,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+      - name: Clean and Build with Maven
+        run: mvn clean install
       - name: Run the Maven verify phase
         run: mvn --batch-mode --update-snapshots verify
