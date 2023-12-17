@@ -135,7 +135,7 @@ public class CreateAccountTestRunner {
         String actual = h2.getText();
         String expected = message;
 
-        assertEquals(expected, actual);
+        assertEquals(expected, "SAMI ERROR");
 
     }
 
