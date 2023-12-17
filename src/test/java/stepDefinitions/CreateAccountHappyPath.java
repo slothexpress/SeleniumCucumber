@@ -8,7 +8,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import io.cucumber.java.en.*;
-import org.junit.Assert;
 import org.openqa.selenium.JavascriptExecutor;
 
 import java.time.Duration;
@@ -20,6 +19,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CreateAccountHappyPath {
 
@@ -134,7 +135,7 @@ public class CreateAccountHappyPath {
         String actual = h2.getText();
         String expected = message;
 
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
 
     }
 
@@ -147,7 +148,7 @@ public class CreateAccountHappyPath {
 
         String actual = span.getText();
 
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     public void helperWait(WebDriver driver, String cssSelector) {
