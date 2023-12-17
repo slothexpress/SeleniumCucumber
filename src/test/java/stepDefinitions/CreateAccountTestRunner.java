@@ -22,7 +22,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CreateAccountHappyPath {
+public class CreateAccountTestRunner {
 
     Random random;
     private int randomNumber;
