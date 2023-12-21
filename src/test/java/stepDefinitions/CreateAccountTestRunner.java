@@ -38,7 +38,8 @@ public class CreateAccountTestRunner {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws InterruptedException {
+        Thread.sleep(2000);
         driver.close();
         driver.quit();
     }
@@ -98,28 +99,33 @@ public class CreateAccountTestRunner {
         driver.findElement(By.id("signupunlicenced_confirmpassword")).sendKeys(passwordConfirm);
     }
 
-    @And("I have checked the checkbox for Terms and Conditions")
-    public void iHaveCheckedTheTermsAndConditionsCheckbox() {
-        driver.findElement(By.cssSelector(".md-checkbox > .md-checkbox:nth-child(1) .box")).click();
-    }
 
-    @But("I have unchecked the checkbox for Terms and Conditions")
-    public void iHaveUncheckedTheCheckboxForTermsAndConditions() {
-        WebElement checkbox = driver.findElement(By.cssSelector(".md-checkbox > .md-checkbox:nth-child(1) .box"));
-
-        if(checkbox.isSelected()) {
-            checkbox.click();
+    @And("I have checked the checkbox for Terms and Conditions {string}")
+    public void iHaveCheckedTheCheckboxForTermsAndConditions(String check) {
+        if(check.equals("true")) {
+            driver.findElement(By.cssSelector(".md-checkbox > .md-checkbox:nth-child(1) .box")).click();
         }
     }
 
-    @And("I have checked the checkbox for Age over eighteen")
-    public void iHaveCheckedTheAgeIsOverCheckbox() {
-        driver.findElement(By.cssSelector(".md-checkbox:nth-child(2) > label > .box")).click();
+
+    @And("I have checked the checkbox for Age over eighteen {string}")
+    public void iHaveCheckedTheCheckboxForAgeOverEighteen(String check) {
+        if(check.equals("true")) {
+            driver.findElement(By.cssSelector(".md-checkbox:nth-child(2) > label > .box")).click();
+        }
+    }
+    @And("I have checked the checkbox for <Age over eighteen>")
+    public void iHaveCheckedTheCheckboxForAgeOverEighteen(boolean check) {
+        if(check) {
+            driver.findElement(By.cssSelector(".md-checkbox:nth-child(2) > label > .box")).click();
+        }
     }
 
-    @And("I have checked the checkbox for Ethics and Conduct")
-    public void iHaveCheckedTheEthicsAndConductCheckbox() {
-        driver.findElement(By.cssSelector(".md-checkbox:nth-child(7) .box")).click();
+    @And("I have checked the checkbox for Ethics and Conduct {string}")
+    public void iHaveCheckedTheCheckboxForEthicsAndConduct(String check) {
+        if(check.equals("true")) {
+            driver.findElement(By.cssSelector(".md-checkbox:nth-child(7) .box")).click();
+        }
     }
 
     @When("I click Submit")
@@ -127,21 +133,21 @@ public class CreateAccountTestRunner {
         driver.findElement(By.name("join")).click();
     }
 
-    @Then("I create an account successfully and get message {string}")
-    public void iCreateAnAccount(String message) throws InterruptedException {
+    @Then("I verify status success and get message {string}")
+    public void iVerifyStatusSuccessAndGetMessage(String message) throws InterruptedException {
         Thread.sleep(2000);
 
         WebElement h2 = driver.findElement(By.tagName("h2"));
         String actual = h2.getText();
         String expected = message;
 
-        assertEquals(expected, "SAMI ERROR");
-
+        assertEquals(expected, actual);
     }
 
-    @Then("I should see an error message {string}")
-    public void iShouldSeeAnErrorMessage(String expected) {
+    @Then("I verify status error and get message {string}")
+    public void iVerifyStatusErrorAndGetMessage(String message) throws InterruptedException {
         String cssSelector = "span[generated='true']";
+        String expected = message;
 
         helperWait(driver, cssSelector);
         WebElement span = driver.findElement(By.cssSelector(cssSelector));
@@ -155,5 +161,4 @@ public class CreateAccountTestRunner {
         wait = new WebDriverWait(driver, Duration.ofSeconds(2));
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector)));
     }
-
 }
