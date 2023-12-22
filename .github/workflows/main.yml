@@ -15,6 +15,9 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+      - name: List files in src folder
+        run: |
+          ls /home/runner/work/SeleniumCucumber/SeleniumCucumber/src
       - run: echo "🍏 This job's status is ${{ job.status }}. Hihihihi SAMI test"
   Build-Test-Java-With-Maven:
     runs-on: ubuntu-latest

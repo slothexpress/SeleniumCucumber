@@ -1,26 +1,22 @@
 package stepDefinitions;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.en.*;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import io.cucumber.java.en.*;
-import org.openqa.selenium.JavascriptExecutor;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Random;
 
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CreateAccountTestRunner {
 
@@ -28,8 +24,6 @@ public class CreateAccountTestRunner {
     private int randomNumber;
     private WebDriver driver;
     private WebDriverWait wait;
-    private Map<String, Object> vars;
-    JavascriptExecutor js;
 
     @Before
     public void setUp() {
@@ -44,19 +38,25 @@ public class CreateAccountTestRunner {
         driver.quit();
     }
 
-    @Given("I am using browser {string}")
-    public void iAmUsingBrowser(String browser) {
-        if(browser.toUpperCase().equals("CHROME")) {
-            driver = new ChromeDriver();
+    public void helperWaitForElement(WebDriver driver, String cssSelector) {
+        wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector)));
+    }
 
-        }
-        else if(browser.toUpperCase().equals("EDGE")) {
-            driver = new EdgeDriver();
-        }
-
-        js = (JavascriptExecutor) driver;
-        vars = new HashMap<String, Object>();
+    public void helperGetURL(WebDriver driver) {
         driver.get("https://membership.basketballengland.co.uk/NewSupporterAccount");
+    }
+
+    @Given("I am using browser Chrome")
+    public void iAmUsingBrowserChrome() {
+        driver = new ChromeDriver();
+        helperGetURL(driver);
+    }
+
+    @Given("I am using browser Edge")
+    public void iAmUsingBrowserEdge() {
+        driver = new EdgeDriver();
+        helperGetURL(driver);
     }
 
     @And("I have filled in birthdate {string}")
@@ -149,7 +149,7 @@ public class CreateAccountTestRunner {
         String cssSelector = "span[generated='true']";
         String expected = message;
 
-        helperWait(driver, cssSelector);
+        helperWaitForElement(driver, cssSelector);
         WebElement span = driver.findElement(By.cssSelector(cssSelector));
 
         String actual = span.getText();
@@ -157,8 +157,4 @@ public class CreateAccountTestRunner {
         assertEquals(expected, actual);
     }
 
-    public void helperWait(WebDriver driver, String cssSelector) {
-        wait = new WebDriverWait(driver, Duration.ofSeconds(2));
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector)));
-    }
 }
