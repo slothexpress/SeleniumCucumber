@@ -1,26 +1,22 @@
 package stepDefinitions;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.en.*;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import io.cucumber.java.en.*;
-import org.openqa.selenium.JavascriptExecutor;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Random;
 
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CreateAccountTestRunner {
 
@@ -28,8 +24,6 @@ public class CreateAccountTestRunner {
     private int randomNumber;
     private WebDriver driver;
     private WebDriverWait wait;
-    private Map<String, Object> vars;
-    JavascriptExecutor js;
 
     @Before
     public void setUp() {
@@ -38,24 +32,31 @@ public class CreateAccountTestRunner {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws InterruptedException {
+        Thread.sleep(2000);
         driver.close();
         driver.quit();
     }
 
-    @Given("I am using browser {string}")
-    public void iAmUsingBrowser(String browser) {
-        if(browser.toUpperCase().equals("CHROME")) {
-            driver = new ChromeDriver();
+    public void helperWaitForElement(WebDriver driver, String cssSelector) {
+        wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector)));
+    }
 
-        }
-        else if(browser.toUpperCase().equals("EDGE")) {
-            driver = new EdgeDriver();
-        }
-
-        js = (JavascriptExecutor) driver;
-        vars = new HashMap<String, Object>();
+    public void helperGetURL(WebDriver driver) {
         driver.get("https://membership.basketballengland.co.uk/NewSupporterAccount");
+    }
+
+    @Given("I am using browser Chrome")
+    public void iAmUsingBrowserChrome() {
+        driver = new ChromeDriver();
+        helperGetURL(driver);
+    }
+
+    @Given("I am using browser Edge")
+    public void iAmUsingBrowserEdge() {
+        driver = new EdgeDriver();
+        helperGetURL(driver);
     }
 
     @And("I have filled in birthdate {string}")
@@ -98,28 +99,33 @@ public class CreateAccountTestRunner {
         driver.findElement(By.id("signupunlicenced_confirmpassword")).sendKeys(passwordConfirm);
     }
 
-    @And("I have checked the checkbox for Terms and Conditions")
-    public void iHaveCheckedTheTermsAndConditionsCheckbox() {
-        driver.findElement(By.cssSelector(".md-checkbox > .md-checkbox:nth-child(1) .box")).click();
-    }
 
-    @But("I have unchecked the checkbox for Terms and Conditions")
-    public void iHaveUncheckedTheCheckboxForTermsAndConditions() {
-        WebElement checkbox = driver.findElement(By.cssSelector(".md-checkbox > .md-checkbox:nth-child(1) .box"));
-
-        if(checkbox.isSelected()) {
-            checkbox.click();
+    @And("I have checked the checkbox for Terms and Conditions {string}")
+    public void iHaveCheckedTheCheckboxForTermsAndConditions(String check) {
+        if(check.equals("true")) {
+            driver.findElement(By.cssSelector(".md-checkbox > .md-checkbox:nth-child(1) .box")).click();
         }
     }
 
-    @And("I have checked the checkbox for Age over eighteen")
-    public void iHaveCheckedTheAgeIsOverCheckbox() {
-        driver.findElement(By.cssSelector(".md-checkbox:nth-child(2) > label > .box")).click();
+
+    @And("I have checked the checkbox for Age over eighteen {string}")
+    public void iHaveCheckedTheCheckboxForAgeOverEighteen(String check) {
+        if(check.equals("true")) {
+            driver.findElement(By.cssSelector(".md-checkbox:nth-child(2) > label > .box")).click();
+        }
+    }
+    @And("I have checked the checkbox for <Age over eighteen>")
+    public void iHaveCheckedTheCheckboxForAgeOverEighteen(boolean check) {
+        if(check) {
+            driver.findElement(By.cssSelector(".md-checkbox:nth-child(2) > label > .box")).click();
+        }
     }
 
-    @And("I have checked the checkbox for Ethics and Conduct")
-    public void iHaveCheckedTheEthicsAndConductCheckbox() {
-        driver.findElement(By.cssSelector(".md-checkbox:nth-child(7) .box")).click();
+    @And("I have checked the checkbox for Ethics and Conduct {string}")
+    public void iHaveCheckedTheCheckboxForEthicsAndConduct(String check) {
+        if(check.equals("true")) {
+            driver.findElement(By.cssSelector(".md-checkbox:nth-child(7) .box")).click();
+        }
     }
 
     @When("I click Submit")
@@ -127,8 +133,8 @@ public class CreateAccountTestRunner {
         driver.findElement(By.name("join")).click();
     }
 
-    @Then("I create an account successfully and get message {string}")
-    public void iCreateAnAccount(String message) throws InterruptedException {
+    @Then("I verify status success and get message {string}")
+    public void iVerifyStatusSuccessAndGetMessage(String message) throws InterruptedException {
         Thread.sleep(2000);
 
         WebElement h2 = driver.findElement(By.tagName("h2"));
@@ -136,24 +142,19 @@ public class CreateAccountTestRunner {
         String expected = message;
 
         assertEquals(expected, actual);
-
     }
 
-    @Then("I should see an error message {string}")
-    public void iShouldSeeAnErrorMessage(String expected) {
+    @Then("I verify status error and get message {string}")
+    public void iVerifyStatusErrorAndGetMessage(String message) throws InterruptedException {
         String cssSelector = "span[generated='true']";
+        String expected = message;
 
-        helperWait(driver, cssSelector);
+        helperWaitForElement(driver, cssSelector);
         WebElement span = driver.findElement(By.cssSelector(cssSelector));
 
         String actual = span.getText();
 
         assertEquals(expected, actual);
-    }
-
-    public void helperWait(WebDriver driver, String cssSelector) {
-        wait = new WebDriverWait(driver, Duration.ofSeconds(2));
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(cssSelector)));
     }
 
 }
